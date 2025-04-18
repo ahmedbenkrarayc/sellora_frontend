@@ -6,9 +6,23 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-const app = createApp(App)
+async function validateAndMount() {
+  const hostname = window.location.hostname
+  const hostParts = hostname.split('.')
 
-app.use(createPinia())
-app.use(router)
+  let subdomain = ''
+  if (hostParts.length > 2) {
+    subdomain = hostParts[0].toLowerCase()
+  }
 
-app.mount('#app')
+  if (subdomain && subdomain !== 'admin'){
+    //validation will be added here
+  }
+
+  const app = createApp(App)
+  app.use(createPinia())
+  app.use(router)
+  app.mount('#app')
+}
+
+validateAndMount()
