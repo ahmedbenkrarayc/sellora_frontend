@@ -1,7 +1,7 @@
 export default [
     {
-        path: '/',
-        name: 'Hello',
-        component: () => import('@/views/HelloView.vue')
+        path: '/register',
+        name: 'RegisterStoreOwner',
+        component: () => import('@/views/storeowner/auth/RegisterView.vue')
     }
 ] 
