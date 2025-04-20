@@ -32,10 +32,19 @@ export const useAuthStore = defineStore('auth', () => {
     return res
   }
 
+  const logout = async () => {
+    const res = await axios.post(`${apiUrl}/logout`, {}, {
+      withCredentials: true
+    })
+    setUser(null)
+    return res
+  }
+
   return {
     user,
     register,
     login,
-    getUser
+    getUser,
+    logout
   }
 })
