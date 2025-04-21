@@ -8,5 +8,10 @@ export default [
         path: '/login',
         name: 'LoginStoreOwner',
         component: () => import('@/views/storeowner/auth/LoginView.vue')
+    },
+    {
+        path: '/store/create',
+        name: 'CreateStore',
+        component: () => import('@/views/storeowner/store/CreateStoreView.vue')
     }
 ] 
