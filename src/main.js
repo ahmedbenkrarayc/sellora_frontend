@@ -6,6 +6,7 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 import App from './App.vue'
 import router from './router'
+import { useAuthStore } from '@/stores/auth/storeowner/auth'
 
 async function validateAndMount() {
   const hostname = window.location.hostname
@@ -17,17 +18,28 @@ async function validateAndMount() {
   }
 
   if (subdomain && subdomain !== 'admin'){
-    //validation will be added here
+    // validation will be added here
   }
 
   const app = createApp(App)
   app.use(createPinia())
+
+  const pinia = app._context.provides.pinia
+  const auth = useAuthStore(pinia)
+
+  try {
+    await auth.getUser()
+  } catch (e) {
+    auth.setUser(null)
+  }
+
   app.use(router)
   app.use(PrimeVue, {
     theme: {
-        preset: Aura
+      preset: Aura
     }
-  });
+  })
+
   app.mount('#app')
 }
 
