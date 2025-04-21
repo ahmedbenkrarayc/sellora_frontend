@@ -1,7 +1,13 @@
 export default [
     {
-        path: '/',
-        name: 'Hello',
-        component: () => import('@/views/StoreView.vue')
+        path: '/storeowner',
+        name: 'storeownerlayout',
+        component: () => import('@/layouts/StoreOwnerLayout.vue'),
+        children: [
+            {
+                path : 'category/create',
+                component : () => import('@/views/HelloView.vue'),
+            },
+        ]
     }
 ] 
