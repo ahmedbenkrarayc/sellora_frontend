@@ -6,9 +6,7 @@
     <main class="flex flex-1 overflow-hidden">
       <SideBar />
   
-      <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-16">
-        <router-view />
-      </div>
+      <router-view />
     </main>
   </div>
 </template>
