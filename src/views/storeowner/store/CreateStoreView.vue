@@ -65,7 +65,7 @@
                     <input 
                       v-model="storeName"
                       type="text" 
-                      class="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-sellora-primary focus:ring-2 focus:ring-sellora-primary/10 transition placeholder-gray-400" 
+                      class="bg-white w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-sellora-primary focus:ring-2 focus:ring-sellora-primary/10 transition placeholder-gray-400" 
                       placeholder="e.g. Luxe Couture"
                       required
                     >
@@ -83,7 +83,7 @@
                     <input 
                       v-model="storeUrl"
                       type="text" 
-                      class="flex-grow px-5 py-3.5 rounded-l-xl border border-gray-200 focus:border-sellora-primary focus:ring-2 focus:ring-sellora-primary/10 transition placeholder-gray-400" 
+                      class="bg-white flex-grow px-5 py-3.5 rounded-l-xl border border-gray-200 focus:border-sellora-primary focus:ring-2 focus:ring-sellora-primary/10 transition placeholder-gray-400" 
                       placeholder="yourbrand"
                       required
                     >
