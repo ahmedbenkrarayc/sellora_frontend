@@ -6,7 +6,7 @@ export default [
         children: [
             {
                 path : 'category/create',
-                component : () => import('@/views/HelloView.vue'),
+                component : () => import('@/views/storeowner/category/CreateCategoryView.vue'),
             },
         ]
     }
