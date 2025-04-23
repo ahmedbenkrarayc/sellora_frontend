@@ -73,7 +73,7 @@
             </div>
             <div class="text-sm text-gray-500">{{ category.created_at ? formatDate(category.created_at) : '23/04/2025' }}</div>
             <div class="flex flex-col items-center gap-2 md:flex-row md:justify-end md:gap-3">
-              <button class="px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-800">Edit</button>
+              <button class="px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-800" @click="goToEdit(category.id)">Edit</button>
               <button
                 class="px-3 py-1 text-sm font-medium text-red-600 hover:text-red-800"
                 @click="showConfirmModalHandler(category.id)"
@@ -93,78 +93,84 @@
 </template>
   
 <script setup>
-  import { ref, computed, onMounted } from 'vue'
-  import WelcomeMessage from '@/components/commondashboards/WelcomeMessage.vue'
-  import { useCategoryStore } from '@/stores/storeowner/category'
-  import { useStoreStore } from '@/stores/store'
-  
-  const categoryStore = useCategoryStore()
-  const storeStore = useStoreStore()
-  
-  const search = ref('')
-  const page = ref(1)
-  const limit = 5
-  
-  const showConfirmModal = ref(false)
-  const categoryToDelete = ref(null)
-  
-  const filteredCategories = computed(() =>
-    categoryStore.categories.filter(category =>
-      category.name.toLowerCase().includes(search.value.toLowerCase())
-    )
+import { ref, computed, onMounted } from 'vue'
+import WelcomeMessage from '@/components/commondashboards/WelcomeMessage.vue'
+import { useCategoryStore } from '@/stores/storeowner/category'
+import { useStoreStore } from '@/stores/store'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const goToEdit = (id) => {
+  router.push(`/storeowner/category/update/${id}`)
+}
+
+const categoryStore = useCategoryStore()
+const storeStore = useStoreStore()
+
+const search = ref('')
+const page = ref(1)
+const limit = 10
+
+const showConfirmModal = ref(false)
+const categoryToDelete = ref(null)
+
+const filteredCategories = computed(() =>
+  categoryStore.categories.filter(category =>
+    category.name.toLowerCase().includes(search.value.toLowerCase())
   )
-  
-  const startIndex = computed(() => (page.value - 1) * limit)
-  const endIndex = computed(() => page.value * limit)
-  const paginatedCategories = computed(() =>
-    filteredCategories.value.slice(startIndex.value, endIndex.value)
-  )
-  
-  const filterCategories = () => {
-    page.value = 1
+)
+
+const startIndex = computed(() => (page.value - 1) * limit)
+const endIndex = computed(() => page.value * limit)
+const paginatedCategories = computed(() =>
+  filteredCategories.value.slice(startIndex.value, endIndex.value)
+)
+
+const filterCategories = () => {
+  page.value = 1
+}
+
+const nextPage = () => {
+  if (endIndex.value < filteredCategories.value.length) {
+    page.value++
   }
-  
-  const nextPage = () => {
-    if (endIndex.value < filteredCategories.value.length) {
-      page.value++
-    }
+}
+
+const prevPage = () => {
+  if (page.value > 1) {
+    page.value--
   }
-  
-  const prevPage = () => {
-    if (page.value > 1) {
-      page.value--
-    }
-  }
-  
-  const formatDate = (isoString) => {
-    const date = new Date(isoString)
-    return date.toLocaleDateString()
-  }
-  
-  const showConfirmModalHandler = (id) => {
-    categoryToDelete.value = id
-    showConfirmModal.value = true
-  }
-  
-  const cancelDelete = () => {
-    showConfirmModal.value = false
-    categoryToDelete.value = null
-  }
-  
-  const confirmDelete = async () => {
-    try {
-      await categoryStore.deleteCategory(categoryToDelete.value)
-      await categoryStore.fetchCategories()
-    } catch (error) {
-      console.error(error)
-    } finally {
-      cancelDelete()
-    }
-  }
-  
-  onMounted(async () => {
+}
+
+const formatDate = (isoString) => {
+  const date = new Date(isoString)
+  return date.toLocaleDateString()
+}
+
+const showConfirmModalHandler = (id) => {
+  categoryToDelete.value = id
+  showConfirmModal.value = true
+}
+
+const cancelDelete = () => {
+  showConfirmModal.value = false
+  categoryToDelete.value = null
+}
+
+const confirmDelete = async () => {
+  try {
+    await categoryStore.deleteCategory(categoryToDelete.value)
     await categoryStore.fetchCategories()
-  })
+  } catch (error) {
+    console.error(error)
+  } finally {
+    cancelDelete()
+  }
+}
+
+onMounted(async () => {
+  await categoryStore.fetchCategories()
+})
 </script>
   
 <style scoped>
