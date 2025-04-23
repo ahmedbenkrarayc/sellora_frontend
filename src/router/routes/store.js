@@ -12,6 +12,10 @@ export default [
                 path : 'category/list',
                 component : () => import('@/views/storeowner/category/CategoryListView.vue'),
             },
+            {
+                path : 'category/update/:id',
+                component : () => import('@/views/storeowner/category/UpdateCategoryView.vue'),
+            },
         ]
     }
 ] 
