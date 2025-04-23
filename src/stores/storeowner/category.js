@@ -5,6 +5,8 @@ import { ref } from 'vue'
 export const useCategoryStore = defineStore('category', () => {
   const apiUrl = import.meta.env.VITE_API_URL
   const loading = ref(false)
+  const categories = ref([])
+  const error = ref(null)
 
   const createCategory = async (payload) => {
     loading.value = true
@@ -20,8 +22,27 @@ export const useCategoryStore = defineStore('category', () => {
     }
   }
 
+  const fetchCategories = async () => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await axios.get(`${apiUrl}/categories`, {
+        withCredentials: true,
+      })
+      categories.value = response.data
+    } catch (err) {
+      error.value = err?.response?.data?.message || 'Failed to load categories'
+      throw error.value
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     loading,
-    createCategory
+    createCategory,
+    categories,
+    error,
+    fetchCategories
   }
 })
