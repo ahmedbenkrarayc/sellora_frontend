@@ -38,11 +38,27 @@ export const useCategoryStore = defineStore('category', () => {
     }
   }
 
+  const deleteCategory = async (id) => {
+    loading.value = true
+    try {
+      await axios.delete(`${apiUrl}/categories/${id}`, {
+        withCredentials: true,
+      })
+      categories.value = categories.value.filter(cat => cat.id !== id)
+    } catch (error) {
+      throw error.response?.data?.message || 'Failed to delete category'
+    } finally {
+      loading.value = false
+    }
+  }
+  
+
   return {
     loading,
     createCategory,
     categories,
     error,
-    fetchCategories
+    fetchCategories,
+    deleteCategory
   }
 })
