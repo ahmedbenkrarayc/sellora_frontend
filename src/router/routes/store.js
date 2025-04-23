@@ -16,6 +16,18 @@ export default [
                 path : 'category/update/:id',
                 component : () => import('@/views/storeowner/category/UpdateCategoryView.vue'),
             },
+            {
+                path : 'subcategory/create',
+                component : () => import('@/views/storeowner/subcategory/SubcategoryCreateView.vue'),
+            },
+            {
+                path : 'subcategory/update/:id',
+                component : () => import('@/views/storeowner/subcategory/SubcategoryUpdateView.vue'),
+            },
+            {
+                path : 'subcategory/list',
+                component : () => import('@/views/storeowner/subcategory/SubcategoryListView.vue'),
+            }
         ]
     }
 ] 
