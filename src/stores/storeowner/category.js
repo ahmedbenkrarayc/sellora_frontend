@@ -51,6 +51,33 @@ export const useCategoryStore = defineStore('category', () => {
       loading.value = false
     }
   }
+
+  async function fetchCategory(id) {
+    try {
+      const { data } = await axios.get(`${apiUrl}/categories/${id}`, {
+        withCredentials: true,
+      })
+
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+  
+  async function updateCategory(id, payload) {
+    loading.value = true
+    try {
+      await axios.put(`${apiUrl}/categories/${id}`, payload, {
+        withCredentials: true,
+      })
+      await fetchCategories()
+    } catch (error) {
+      throw error
+    } finally {
+      loading.value = false
+    }
+  }
+  
   
 
   return {
@@ -59,6 +86,8 @@ export const useCategoryStore = defineStore('category', () => {
     categories,
     error,
     fetchCategories,
-    deleteCategory
+    deleteCategory,
+    fetchCategory,
+    updateCategory
   }
 })
