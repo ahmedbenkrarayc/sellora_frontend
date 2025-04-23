@@ -41,9 +41,30 @@ export const useStoreStore = defineStore('store', () => {
     }
   }
 
+  const getStoreBySubdomain = async (subdomain) => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL
+      const response = await axios.get(`${apiUrl}/stores/subdomain/${subdomain}`, {
+        withCredentials: true
+      })
+
+      if (response.status === 200) {
+        storeData.value = response.data
+        error.value = null
+      } else {
+        throw new Error('Failed to fetch store data')
+      }
+    } catch (err) {
+      error.value = err.response?.data?.message || err.message || 'Unknown error'
+      storeData.value = null
+      console.error('Error fetching store by subdomain:', error.value)
+    }
+  }
+
   return {
     storeData,
     error,
-    createStore
+    createStore,
+    getStoreBySubdomain
   }
 })
