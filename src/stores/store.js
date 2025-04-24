@@ -5,14 +5,16 @@ import axios from 'axios'
 export const useStoreStore = defineStore('store', () => {
   const storeData = ref(null)
   const error = ref(null)
+  const loading = ref(false)
 
   const createStore = async (storeDataPayload) => {
+    loading.value = true
+    error.value = null
     try {
       const formData = new FormData()
       formData.append('name', storeDataPayload.storeName)
       formData.append('subdomain', storeDataPayload.storeUrl)
-      if(storeDataPayload.logo)
-        formData.append('logo', storeDataPayload.logo)
+      if (storeDataPayload.logo) formData.append('logo', storeDataPayload.logo)
       formData.append('type', storeDataPayload.category)
       formData.append('status', 'disabled')
       formData.append('description', storeDataPayload.description)
@@ -20,37 +22,38 @@ export const useStoreStore = defineStore('store', () => {
 
       const apiUrl = import.meta.env.VITE_API_URL
       const response = await axios.post(`${apiUrl}/stores`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        withCredentials: true
+        headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
       })
 
-      if(response.status === 201) {
+      if (response.status === 201) {
         storeData.value = response.data
-      }else{
+      } else {
         throw new Error('Failed to create store')
       }
-    }catch(err){
-      if(err.response?.status === 422) {
+    } catch (err) {
+      if (err.response?.status === 422) {
         error.value = err.response?.data?.errors || 'Validation failed. Please check the form fields.'
-      }else{
+      } else {
         error.value = err.response?.data?.message || err.message || 'Unknown error'
       }
       console.error('Error creating store:', error.value)
+    } finally {
+      loading.value = false
     }
   }
 
   const getStoreBySubdomain = async (subdomain) => {
+    loading.value = true
+    error.value = null
     try {
       const apiUrl = import.meta.env.VITE_API_URL
       const response = await axios.get(`${apiUrl}/stores/subdomain/${subdomain}`, {
-        withCredentials: true
+        withCredentials: true,
       })
 
       if (response.status === 200) {
         storeData.value = response.data
-        error.value = null
       } else {
         throw new Error('Failed to fetch store data')
       }
@@ -58,13 +61,55 @@ export const useStoreStore = defineStore('store', () => {
       error.value = err.response?.data?.message || err.message || 'Unknown error'
       storeData.value = null
       console.error('Error fetching store by subdomain:', error.value)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const updateStore = async (id, updatePayload) => {
+    loading.value = true
+    error.value = null
+    try {
+      const formData = new FormData()
+      formData.append('_method', 'PUT')
+      formData.append('id', id)
+      formData.append('name', updatePayload.name)
+      formData.append('subdomain', updatePayload.subdomain)
+      formData.append('type', updatePayload.type)
+      formData.append('storeowner_id', updatePayload.storeowner_id)
+      formData.append('status', updatePayload.status)
+      if (updatePayload.description) formData.append('description', updatePayload.description)
+      if (updatePayload.logo) formData.append('logo', updatePayload.logo)
+
+      const apiUrl = import.meta.env.VITE_API_URL
+      const response = await axios.post(`${apiUrl}/stores/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
+      })
+
+      if (response.status === 200) {
+        storeData.value = response.data
+      } else {
+        throw new Error('Failed to update store')
+      }
+    } catch (err) {
+      if (err.response?.status === 422) {
+        error.value = err.response.data.errors || 'Validation failed. Please check the form fields.'
+      } else {
+        error.value = err.response?.data?.message || err.message || 'Unknown error'
+      }
+      console.error('Error updating store:', error.value)
+    } finally {
+      loading.value = false
     }
   }
 
   return {
     storeData,
     error,
+    loading,
     createStore,
-    getStoreBySubdomain
+    getStoreBySubdomain,
+    updateStore,
   }
 })
