@@ -27,6 +27,14 @@ export default [
             {
                 path : 'subcategory/list',
                 component : () => import('@/views/storeowner/subcategory/SubcategoryListView.vue'),
+            },
+            {
+                path : 'product/create',
+                component : () => import('@/views/storeowner/product/CreateProductView.vue'),
+            },
+            {
+                path : 'store/manage',
+                component : () => import('@/views/storeowner/store/ManageStoreView.vue'),
             }
         ]
     }
