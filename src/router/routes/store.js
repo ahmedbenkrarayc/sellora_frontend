@@ -37,6 +37,10 @@ export default [
                 component : () => import('@/views/storeowner/product/UpdateProductView.vue'),
             },
             {
+                path : 'product/list',
+                component : () => import('@/views/storeowner/product/ProductListView.vue'),
+            },
+            {
                 path : 'store/manage',
                 component : () => import('@/views/storeowner/store/ManageStoreView.vue'),
             }
