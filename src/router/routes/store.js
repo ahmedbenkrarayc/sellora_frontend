@@ -33,6 +33,10 @@ export default [
                 component : () => import('@/views/storeowner/product/CreateProductView.vue'),
             },
             {
+                path : 'product/update/:id',
+                component : () => import('@/views/storeowner/product/UpdateProductView.vue'),
+            },
+            {
                 path : 'store/manage',
                 component : () => import('@/views/storeowner/store/ManageStoreView.vue'),
             }
