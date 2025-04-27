@@ -29,7 +29,7 @@ export const useCategoryStore = defineStore('category', () => {
       const response = await axios.get(`${apiUrl}/categories`, {
         withCredentials: true,
       })
-      categories.value = response.data
+      categories.value = response.data?.data
     } catch (err) {
       error.value = err?.response?.data?.message || 'Failed to load categories'
       throw error.value
@@ -58,7 +58,7 @@ export const useCategoryStore = defineStore('category', () => {
         withCredentials: true,
       })
 
-      return data
+      return data?.data
     } catch (error) {
       throw error
     }
