@@ -170,6 +170,19 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
+  const deleteProduct = async (productId) => {
+    loading.value = true
+    error.value = null
+    try {
+      await axios.delete(`${apiUrl}/products/${productId}`, { withCredentials: true })
+      loading.value = false
+    } catch (err) {
+      loading.value = false
+      error.value = err.response?.data?.message || 'Something went wrong'
+      throw err
+    }
+  }
+
   return {
     loading,
     error,
@@ -178,6 +191,7 @@ export const useProductStore = defineStore('product', () => {
     createFullProduct,
     updateFullProduct,
     getStoreProducts,
-    storeProducts
+    storeProducts,
+    deleteProduct
   }
 })
