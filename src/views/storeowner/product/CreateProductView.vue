@@ -1,8 +1,7 @@
 <template>
   <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-16">
     <Toast ref="toast" />
-    <h1 class="font-semibold text-[18px] md:text-[20px] text-[#222222]">Welcome back, Ahmed</h1>
-    <h2 class="text-[13px] md:text-[14px] text-[#636363]">Manage your products effortlessly and stay ahead!</h2>
+    <WelcomeMessage description="Manage your products effortlessly and stay ahead!" />
     
     <section class="w-full rounded-lg p-3 md:p-4 mt-4 md:mt-6">
       <div class="bg-white px-4 py-6 sm:px-8 md:px-12 lg:px-16 lg:py-12 rounded-lg">
@@ -441,6 +440,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, reactive } from 'vue'
+import WelcomeMessage from '@/components/commondashboards/WelcomeMessage.vue'
 import Dialog from 'primevue/dialog'
 import Toast from 'primevue/toast'
 import { useSubcategoryStore } from '@/stores/storeowner/subcategory'
