@@ -29,7 +29,7 @@ export const useSubcategoryStore = defineStore('subcategory', () => {
       const response = await axios.get(`${apiUrl}/subcategories`, {
         withCredentials: true,
       })
-      subcategories.value = response.data
+      subcategories.value = response.data?.data
     } catch (err) {
       error.value = err.response?.data?.message || 'Failed to load subcategories'
       throw error.value
@@ -57,7 +57,7 @@ export const useSubcategoryStore = defineStore('subcategory', () => {
       const { data } = await axios.get(`${apiUrl}/subcategories/${id}`, {
         withCredentials: true,
       })
-      return data
+      return data?.data
     } catch (err) {
       throw err
     }
