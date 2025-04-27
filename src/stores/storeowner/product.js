@@ -1,4 +1,3 @@
-// Updated product.js
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import axios from 'axios'
@@ -8,6 +7,7 @@ export const useProductStore = defineStore('product', () => {
   const loading = ref(false)
   const error = ref(null)
   const currentProduct = ref(null)
+  const storeProducts = ref([])
 
   const getProductById = async (productId) => {
     loading.value = true
@@ -153,6 +153,23 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
+  const getStoreProducts = async (storeId) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await axios.get(`${apiUrl}/products/store/${storeId}`, { 
+        withCredentials: true 
+      })
+      storeProducts.value = response.data.data
+      loading.value = false
+      return storeProducts.value
+    } catch (err) {
+      loading.value = false
+      error.value = err.response?.data?.message || 'Something went wrong'
+      throw err
+    }
+  }
+
   return {
     loading,
     error,
@@ -160,5 +177,7 @@ export const useProductStore = defineStore('product', () => {
     getProductById,
     createFullProduct,
     updateFullProduct,
+    getStoreProducts,
+    storeProducts
   }
 })
