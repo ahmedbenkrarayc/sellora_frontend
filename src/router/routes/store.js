@@ -43,6 +43,10 @@ export default [
             {
                 path : 'store/manage',
                 component : () => import('@/views/storeowner/store/ManageStoreView.vue'),
+            },
+            {
+                path : 'customer/list',
+                component : () => import('@/views/storeowner/customers/CustomersView.vue'),
             }
         ]
     }
