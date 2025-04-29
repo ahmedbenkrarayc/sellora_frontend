@@ -1,5 +1,10 @@
 export default [
     {
+        path : '/',
+        name: 'homeview',
+        component : () => import('@/views/store/HomeView.vue'),
+    },
+    {
         path: '/storeowner',
         name: 'storeownerlayout',
         component: () => import('@/layouts/StoreOwnerLayout.vue'),
@@ -49,5 +54,5 @@ export default [
                 component : () => import('@/views/storeowner/customers/CustomersView.vue'),
             }
         ]
-    }
+    },
 ] 
