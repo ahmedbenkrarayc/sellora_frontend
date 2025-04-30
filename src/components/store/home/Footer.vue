@@ -1,39 +1,42 @@
 <template>
-    <footer class="w-full h-fit pt-14 pb-6 px-10 font-poppins text-white bg-black">
-        <div class="sm:block md:hidden my-4">
-            <h1 class="title font-bold sm:text-[20px] md:text-[25px] cursor-pointer">{{ title }}</h1>
-            <p class=" leading-5 mt-2 text-[14px] font-[500]">Elevate your style with our latest fashion collections. Shop now on our eCommerce store for trendy, high-quality apparel that fits your lifestyle.</p>
+
+    <footer class="mt-[100px] bg-black sm:px-[4rem] md:px-[4rem] lg:px-[5rem] pt-[3rem] pb-[1rem]">
+        <div class="md:flex md:gap-x-[80px] lg:gap-x-[100px] sm:w-fit mx-auto md:w-full">
+            <div class="md:w-[25%]">
+                <h1 class="text-white font-semibold text-xl">{{ title }}</h1>
+                <p class="text-[#D7D7D7] mt-2 text-xs">Elevate your style with our latest fashion collections. Shop now on our eCommerce store for trendy, high-quality apparel that fits your lifestyle.</p>
+            </div>
+            <div class="md:w-[75%] grid md:grid-cols-4 gap-y-6 sm:mt-6 md:mt-0">
+                <div>
+                    <h1 class="text-white font-medium text-base mb-3">Shop</h1>
+                    <a class="w-fit text-[#D7D7D7] block text-[13px] mb-1" href="#">Home</a>
+                    <a class="w-fit text-[#D7D7D7] block text-[13px] mb-1" href="#">Products</a>
+                    <a class="w-fit text-[#D7D7D7] block text-[13px] mb-1" href="#">Wishlist</a>
+                </div>
+                <div>
+                    <h1 class="text-white font-medium text-base mb-3">Useful</h1>
+                    <a class="w-fit text-[#D7D7D7] block text-[13px] mb-1" href="#">About Us</a>
+                    <a class="w-fit text-[#D7D7D7] block text-[13px] mb-1" href="#">Contact</a>
+                    <a class="w-fit text-[#D7D7D7] block text-[13px] mb-1" href="#">Privacy & Policy</a>
+                </div>
+                <div>
+                    <h1 class="text-white font-medium text-base mb-3">Support</h1>
+                    <a class="w-fit text-[#D7D7D7] block text-[13px] mb-1" href="#">FAQs</a>
+                    <a class="w-fit text-[#D7D7D7] block text-[13px] mb-1" href="#">Cookie Policy</a>
+                    <a class="w-fit text-[#D7D7D7] block text-[13px] mb-1" href="#">Terms of Use</a>
+                </div>
+                <div>
+                    <h1 class="text-white font-medium text-base mb-3">Socials</h1>
+                    <a class="w-fit text-[#D7D7D7] block text-[13px] mb-1" href="#">Linkedin</a>
+                    <a class="w-fit text-[#D7D7D7] block text-[13px] mb-1" href="#">Instagram</a>
+                    <a class="w-fit text-[#D7D7D7] block text-[13px] mb-1" href="#">Facebook</a>
+                </div>
+            </div>
         </div>
-        <div class="w-full h-fit grid sm:grid-cols-2 md:grid-cols-4 md:gap-x-[10px] ld:gap-x-[100px]">
-            <div class="sm:hidden md:block my-4">
-                <h1 class="title font-bold sm:text-[20px] md:text-[25px] cursor-pointer">{{ title }}</h1>
-                <p class=" leading-5 mt-2 text-[14px] font-[500]">Elevate your style with our latest fashion collections. Shop now on our eCommerce store for trendy, high-quality apparel that fits your lifestyle.</p>
-            </div>
-            <div class="md:pl-6 sm:text-left md:text-left my-4">
-                <h1 class="font-semibold text-[16px] mb-2">Useful Links</h1>
-                <p class="text-[14px] mb-[2px] font-[400] cursor-pointer">Home</p>
-                <p class="text-[14px] mb-[2px] font-[400] cursor-pointer">Products</p>
-                <p class="text-[14px] mb-[2px] font-[400] cursor-pointer">Wishlist</p>
-                <p class="text-[14px] mb-[2px] font-[400] cursor-pointer">Contact</p>
-            </div>
-            <div class="sm:text-left md:text-left my-4">
-                <h1 class="font-semibold text-[16px] mb-2">Other Links</h1>
-                <p class="text-[14px] mb-[2px] font-[400] cursor-pointer">About Us</p>
-                <p class="text-[14px] mb-[2px] font-[400] cursor-pointer">Services</p>
-                <p class="text-[14px] mb-[2px] font-[400] cursor-pointer">FAQs</p>
-                <p class="text-[14px] mb-[2px] font-[400] cursor-pointer">Privacy & Policy</p>
-            </div>
-            <div class="sm:text-left md:text-left my-4">
-                <h1 class="font-semibold text-[16px] mb-2">Social Media</h1>
-                <p class="text-[14px] mb-[2px] font-[400] cursor-pointer">LinkedIn</p>
-                <p class="text-[14px] mb-[2px] font-[400] cursor-pointer">Twitter</p>
-                <p class="text-[14px] mb-[2px] font-[400] cursor-pointer">Facebook</p>
-                <p class="text-[14px] mb-[2px] font-[400] cursor-pointer">Instagram</p>
-            </div>
-        </div>
-        <div class="sm:text-[12px] md:text-[14px] text-center mt-10 pt-[10px]">
+        <hr class="mt-10 mb-4">
+        <p class="text-center text-[#D7D7D7] text-xs">
             {{ new Date().getFullYear() - 1 }} - {{ new Date().getFullYear().toString() }} &copy; {{ title }} . All rights Reserved
-        </div>
+        </p>
     </footer>
 </template>
 
