@@ -49,7 +49,6 @@
             <p @click="activeTab = 'details'" :class="{'activetab': activeTab === 'details'}" class="border-b py-4 cursor-pointer text-[15px] text-[gray] font-poppins font-[500]">Additional Details</p>
         </div>
 
-        <!-- Description Tab Content -->
         <div v-if="activeTab === 'description'" class="mt-8">
             <div class="prose max-w-none">
                 <h3 class="text-xl font-bold mb-4">Detailed Description</h3>
@@ -68,7 +67,6 @@
             </div>
         </div>
 
-        <!-- Details Tab Content -->
         <div v-if="activeTab === 'details'" class="mt-8">
             <div class="prose max-w-none">
                 <h3 class="text-xl font-bold mb-4">Additional Information</h3>
