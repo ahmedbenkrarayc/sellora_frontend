@@ -1,8 +1,27 @@
 export default [
     {
         path : '/',
-        name: 'homeview',
-        component : () => import('@/views/store/HomeView.vue'),
+        name: 'storelayout',
+        component : () => import('@/layouts/StoreLayout.vue'),
+        children: [
+            {
+                path: '',
+                component : () => import('@/views/store/HomeView.vue'),
+            },
+            {
+                path: '/search',
+                component : () => import('@/views/store/CatalogView.vue'),
+            },
+            {
+                path: '/product',
+                component : () => import('@/views/store/DetailsView.vue'),
+            }
+        ]
+    },
+    {
+        path : '/search',
+        name: 'catalogview',
+        component : () => import('@/views/store/CatalogView.vue'),
     },
     {
         path: '/storeowner',
