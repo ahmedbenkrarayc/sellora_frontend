@@ -42,11 +42,13 @@
             </ul>
         </div>
     </div>
+    <CartMenu />
 </template>
 
 <script setup>
 import { ref } from 'vue'
-    
+import CartMenu from '@/components/store/header/CartMenu.vue'
+
 const title = ref('Sellora')
 
 function showcart(){
