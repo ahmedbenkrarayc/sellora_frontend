@@ -209,7 +209,7 @@ export const useProductStore = defineStore('product', () => {
       const response = await axios.get(`${apiUrl}/products/latest/${storeId}`, { 
         withCredentials: true 
       })
-      latestProducts.value = response.data.data // Assuming the response has a data property
+      latestProducts.value = response.data.data
       loading.value = false
       return latestProducts.value
     } catch (err) {
