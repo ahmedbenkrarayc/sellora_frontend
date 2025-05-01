@@ -9,6 +9,7 @@ export const useProductStore = defineStore('product', () => {
   const currentProduct = ref(null)
   const storeProducts = ref([])
   const curatedPicks = ref([])
+  const latestProducts = ref([])
 
   const getProductById = async (productId) => {
     loading.value = true
@@ -201,6 +202,23 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
+  const getLatestProducts = async (storeId) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await axios.get(`${apiUrl}/products/latest/${storeId}`, { 
+        withCredentials: true 
+      })
+      latestProducts.value = response.data.data // Assuming the response has a data property
+      loading.value = false
+      return latestProducts.value
+    } catch (err) {
+      loading.value = false
+      error.value = err.response?.data?.message || 'Failed to fetch latest products'
+      throw err
+    }
+  }
+
   return {
     loading,
     error,
@@ -212,6 +230,8 @@ export const useProductStore = defineStore('product', () => {
     storeProducts,
     deleteProduct,
     getCuratedPicks,
-    curatedPicks
+    curatedPicks,
+    getLatestProducts,
+    latestProducts
   }
 })
