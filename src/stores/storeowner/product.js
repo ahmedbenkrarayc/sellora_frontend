@@ -8,6 +8,7 @@ export const useProductStore = defineStore('product', () => {
   const error = ref(null)
   const currentProduct = ref(null)
   const storeProducts = ref([])
+  const curatedPicks = ref([])
 
   const getProductById = async (productId) => {
     loading.value = true
@@ -39,11 +40,11 @@ export const useProductStore = defineStore('product', () => {
         },
         { withCredentials: true }
       )
-      const productId = productRes.data.id
+      const productId = productRes.data.data.id
 
       await saveProductParts(productId, productPayload)
       loading.value = false
-      return productRes.data
+      return productRes.data.data
     } catch (err) {
       loading.value = false
       error.value = err.response?.data?.message || 'Something went wrong'
@@ -136,7 +137,7 @@ export const useProductStore = defineStore('product', () => {
         { withCredentials: true }
       )
 
-      const variantId = variantRes.data.id
+      const variantId = variantRes.data.data.id
 
       for (const image of variant.images) {
         const formData = new FormData()
@@ -183,6 +184,23 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
+  const getCuratedPicks = async (storeId) => {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await axios.get(`${apiUrl}/products/curratedpicks/${storeId}`, { 
+        withCredentials: true 
+      })
+      curatedPicks.value = response.data.data
+      loading.value = false
+      return curatedPicks.value
+    } catch (err) {
+      loading.value = false
+      error.value = err.response?.data?.message || 'Failed to fetch curated picks'
+      throw err
+    }
+  }
+
   return {
     loading,
     error,
@@ -192,6 +210,8 @@ export const useProductStore = defineStore('product', () => {
     updateFullProduct,
     getStoreProducts,
     storeProducts,
-    deleteProduct
+    deleteProduct,
+    getCuratedPicks,
+    curatedPicks
   }
 })
