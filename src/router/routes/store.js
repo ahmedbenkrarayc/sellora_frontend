@@ -13,7 +13,7 @@ export default [
                 component : () => import('@/views/store/CatalogView.vue'),
             },
             {
-                path: '/product',
+                path: '/product/:id',
                 component : () => import('@/views/store/DetailsView.vue'),
             },
             {
