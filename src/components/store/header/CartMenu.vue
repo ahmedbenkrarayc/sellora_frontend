@@ -1,5 +1,5 @@
 <template>
-    <div id="cart" class="scroll fixed sm:w-full md:w-[400px] h-full bg-white top-0 right-[-100%] z-[1000] p-[20px] font-reemkufi overflow-y-scroll ">
+    <div id="cart" class="scroll fixed sm:w-full md:w-[400px] h-full bg-white top-0 right-[-100%] z-[1000] p-[20px] font-reemkufi overflow-y-scroll">
         <div class="text-[#434343] w-full flex justify-between items-center py-8">
             <p class="text-[25px] font-[500]">Wishlist</p>
             <div class="cursor-pointer text-[20px]" @click="closeMenu">
@@ -7,8 +7,12 @@
             </div>
         </div>
         
-        <div v-if="cartItems.length > 0">
-            <div class="mt-2 flex items-start relative" v-for="item in cartItems" :key="item.id">
+        <div v-if="wishlistStore.loading" class="flex justify-center py-10">
+            <p>Loading...</p>
+        </div>
+        
+        <div v-else-if="wishlistStore.wishlistItems.length > 0">
+            <div class="mt-2 flex items-start relative" v-for="item in wishlistStore.wishlistItems" :key="item.id">
                 <div class="flex items-center mr-3 mt-8">
                     <input 
                         type="checkbox" 
@@ -25,28 +29,28 @@
                     </label>
                 </div>
                 
-                <img :src="item.image" alt="" class="bg-black w-[67px] h-[100px] block object-cover" />
+                <img :src="imagesurl+item.image || 'https://via.placeholder.com/67x100'" alt="" class="bg-black w-[67px] h-[100px] block object-cover" />
                 <div class="px-[20px] flex-1">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-[13px] font-ibm font-[300] underline text-[#5f5f5f] cursor-pointer">{{ item.name }}</p>
-                            <p class="font-ibm font-[300] text-[13px]">{{ item.category }}</p>
+                            <p class="text-[13px] font-ibm font-[300] underline text-[#5f5f5f] cursor-pointer">{{ item.name || 'Product Name' }}</p>
+                            <p class="font-ibm font-[300] text-[13px]">{{ item.category || 'Category' }}</p>
                             <p class="font-ibm font-bold text-[13px] text-[#5f5f5f] mt-[5px]">
-                                Unit Price (<span class="text-[red]">{{ item.price }}$</span>)
+                                Unit Price (<span class="text-[red]">{{ item.price || 0 }}$</span>)
                             </p>
                         </div>
-                        <!-- Remove icon -->
+                        
                         <button 
-                            @click="removeItem(item.id)" 
+                            @click="removeFromWishlist(item.id)" 
                             class="text-[#5f5f5f] hover:text-red-500 ml-2"
                         >
                             <i class="fa-solid fa-trash text-sm"></i>
                         </button>
                     </div>
                     <div class="flex mt-4">
-                        <div @click="decreaseQuantity(item.id)" class="w-[40px] hover:border border-black h-[40px] flex items-center font-ibm font-bold text-[13px] text-[black] justify-center cursor-pointer">−</div>
-                        <div class="w-[40px] h-[40px] flex items-center font-ibm font-bold text-[13px] text-black justify-center">{{ item.quantity }}</div>
-                        <div @click="increaseQuantity(item.id)" class="w-[40px] hover:border border-black h-[40px] flex items-center font-ibm font-bold text-[13px] text-[black] justify-center cursor-pointer">+</div>
+                        <button @click="decreaseQuantity(item)" class="w-[40px] hover:border border-black h-[40px] flex items-center font-ibm font-bold text-[13px] text-[black] justify-center cursor-pointer">−</button>
+                        <div class="w-[40px] h-[40px] flex items-center font-ibm font-bold text-[13px] text-black justify-center">{{ item.quantity || 1 }}</div>
+                        <button @click="increaseQuantity(item)" class="w-[40px] hover:border border-black h-[40px] flex items-center font-ibm font-bold text-[13px] text-[black] justify-center cursor-pointer">+</button>
                     </div>
                 </div>
             </div>
@@ -82,55 +86,41 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, onMounted } from 'vue';
+import { useWishlistStore } from '@/stores/wishlist';
+import { useAuthStore } from '@/stores/auth/storeowner/auth';
 
-const cartItems = ref([
-    {
-        id: 1,
-        name: "Classic White T-Shirt",
-        category: "Tops",
-        price: 24.99,
-        quantity: 1,
-        image: "https://img.ltwebstatic.com/v4/j/spmp/2025/04/18/27/1744963956924bb9ff5b93504adcf7941e8349e38a.webp",
-        selected: false
-    },
-    {
-        id: 2,
-        name: "Slim Fit Jeans",
-        category: "Bottoms",
-        price: 59.99,
-        quantity: 1,
-        image: "https://img.ltwebstatic.com/v4/j/spmp/2025/04/18/27/1744963956924bb9ff5b93504adcf7941e8349e38a.webp",
-        selected: false
-    }
-]);
+const imagesurl = import.meta.env.VITE_IMAGES_URL
+
+const wishlistStore = useWishlistStore();
+const authStore = useAuthStore();
+
+onMounted(async () => {
+    await wishlistStore.loadWishlist(authStore.user);
+});
 
 const selectedSubtotal = computed(() => {
-    return cartItems.value.reduce((total, item) => {
-        return item.selected ? total + (item.price * item.quantity) : total;
+    return wishlistStore.wishlistItems.reduce((total, item) => {
+        return item.selected ? total + ((item.price || 0) * (item.quantity || 1)) : total;
     }, 0);
 });
 
 const selectedCount = computed(() => {
-    return cartItems.value.filter(item => item.selected).length;
+    return wishlistStore.wishlistItems.filter(item => item.selected).length;
 });
 
-const increaseQuantity = (id) => {
-    const item = cartItems.value.find(item => item.id === id);
-    if (item) {
-        item.quantity += 1;
+const increaseQuantity = (item) => {
+    item.quantity = (item.quantity || 1) + 1;
+};
+
+const decreaseQuantity = (item) => {
+    if ((item.quantity || 1) > 1) {
+        item.quantity = (item.quantity || 1) - 1;
     }
 };
 
-const decreaseQuantity = (id) => {
-    const item = cartItems.value.find(item => item.id === id);
-    if (item && item.quantity > 1) {
-        item.quantity -= 1;
-    }
-};
-
-const removeItem = (id) => {
-    cartItems.value = cartItems.value.filter(item => item.id !== id);
+const removeFromWishlist = async (itemId) => {
+    await wishlistStore.removeItem(authStore.user, itemId);
 };
 
 const closeMenu = () => {
