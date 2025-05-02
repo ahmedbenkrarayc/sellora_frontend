@@ -41,7 +41,7 @@
                         </div>
                         
                         <button 
-                            @click="removeFromWishlist(item.id)" 
+                            @click="removeFromWishlist(item.productvariant_id)" 
                             class="text-[#5f5f5f] hover:text-red-500 ml-2"
                         >
                             <i class="fa-solid fa-trash text-sm"></i>
