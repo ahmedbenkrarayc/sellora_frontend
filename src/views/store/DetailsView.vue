@@ -66,15 +66,14 @@
                     <p v-else class="text-red-500 text-sm">This combination is not available</p>
                 </div>
                 
-                <div class="flex mt-8 text-[14px]">
-                    <button :disabled="!selectedVariant || selectedVariant.stock <= 0"
-                            class="px-6 py-2 bg-[black] hover:bg-[#1d242d90] transition-all font-[300] font-poppins text-[white] mr-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                        Add to cart
-                    </button>
-                    <button class="px-4 py-2 bg-[black] hover:bg-[#1d242d90] transition-all font-[300] font-poppins text-[white]">
-                        <i class="fa-solid fa-bookmark"></i>
-                    </button>
-                </div>
+                <button @click="handleAddToCart" 
+                        :disabled="!selectedVariant || selectedVariant.stock <= 0 || wishlistStore.loading"
+                        class="mt-8 px-6 py-2 bg-[black] hover:bg-[#1d242d90] transition-all font-[300] font-poppins text-[white] disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span v-if="wishlistStore.loading">
+                        <i class="fa-solid fa-spinner animate-spin mr-2"></i> Processing...
+                    </span>
+                    <span v-else>Add to Cart</span>
+                </button>
             </div>
         </div>
         
@@ -109,22 +108,24 @@ import HeaderSection from '@/components/store/header/HeaderSection.vue'
 import { useProductStore } from '@/stores/storeowner/product'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
+import { useWishlistStore } from '@/stores/wishlist'
+import { useAuthStore } from '@/stores/auth/storeowner/auth'
 
 const imagesurl = import.meta.env.VITE_IMAGES_URL
 const route = useRoute()
 const productStore = useProductStore()
+const wishlistStore = useWishlistStore()
+const authStore = useAuthStore()
+
 const modules = [Pagination]
 const activeTab = ref('description')
 
-// Refs
 const selectedColor = ref('')
 const selectedSize = ref('')
 const selectedVariant = ref(null)
 
-// Store references
 const { currentProduct, loading, error } = storeToRefs(productStore)
 
-// Computed properties
 const uniqueColors = computed(() => {
     if (!currentProduct.value?.variants) return []
     const colors = []
@@ -159,7 +160,13 @@ const selectedVariantImages = computed(() => {
     return selectedVariant.value?.images || []
 })
 
-// Methods
+const isInCart = computed(() => {
+    if (!selectedVariant.value) return false
+    return wishlistStore.wishlistItems.some(item => 
+        item.productvariant_id === selectedVariant.value.id
+    )
+})
+
 const setMainImage = (imagePath) => {
     const mainGallery = document.getElementById('maingallery')
     if (mainGallery) {
@@ -184,8 +191,29 @@ const isOptionAvailable = (type, value) => {
     )
 }
 
+const handleAddToCart = async () => {
+    if (!selectedVariant.value) return
+    
+    const payload = {
+        productvariant_id: selectedVariant.value.id,
+        name: currentProduct.value.title,
+        price: selectedVariant.value.price,
+        image: selectedVariantImages.value[0]?.path || '',
+        color: selectedColor.value,
+        size: selectedSize.value,
+        quantity: 1
+    }
+    
+    if (isInCart.value) {
+        await wishlistStore.addItem(authStore.user, payload)
+    } else {
+        await wishlistStore.addItem(authStore.user, payload)
+    }
+}
+
 onMounted(async () => {
     await productStore.getProductById(route.params.id)
+    await wishlistStore.loadWishlist(authStore.user)
     
     if (currentProduct.value?.variants?.length) {
         const firstAvailable = currentProduct.value.variants.find(v => v.available && v.stock > 0) || currentProduct.value.variants[0]
