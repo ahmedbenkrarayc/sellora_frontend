@@ -54,7 +54,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
         const localItems = localStorage.getItem('wishlist')
         let items = localItems ? JSON.parse(localItems) : []
 
-        const exists = items.find(item => item.id === payload.id)
+        const exists = items.find(item => item.productvariant_id === payload.productvariant_id)
         if (!exists) {
           items.push(payload)
           localStorage.setItem('wishlist', JSON.stringify(items))
@@ -77,7 +77,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
       } else {
         const localItems = localStorage.getItem('wishlist')
         let items = localItems ? JSON.parse(localItems) : []
-        items = items.filter(item => item.id !== itemId)
+        items = items.filter(item => item.productvariant_id !== itemId)
         localStorage.setItem('wishlist', JSON.stringify(items))
         wishlistItems.value = items
       }
