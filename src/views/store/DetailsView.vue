@@ -204,11 +204,7 @@ const handleAddToCart = async () => {
         quantity: 1
     }
     
-    if (isInCart.value) {
-        await wishlistStore.addItem(authStore.user, payload)
-    } else {
-        await wishlistStore.addItem(authStore.user, payload)
-    }
+    await wishlistStore.addItem(authStore.user, payload)
 }
 
 onMounted(async () => {
