@@ -8,6 +8,8 @@ import App from './App.vue'
 import router from './router'
 import { useAuthStore } from '@/stores/auth/storeowner/auth'
 import { useStoreStore } from '@/stores/store'
+import Echo from 'laravel-echo'
+import Pusher from 'pusher-js'
 
 async function validateSubdomain() {
   const hostname = window.location.hostname
@@ -49,6 +51,17 @@ async function bootstrap() {
   } catch (e) {
     auth.setUser(null)
   }
+
+  window.Pusher = Pusher
+
+  window.Echo = new Echo({
+    broadcaster: 'reverb',
+    key: import.meta.env.VITE_REVERB_KEY, 
+    wsHost: import.meta.env.VITE_REVERB_HOST,
+    wsPort: 6001,
+    forceTLS: false,
+    enabledTransports: ['ws', 'wss'],
+  })
 
   app.use(router)
   app.use(PrimeVue, {
