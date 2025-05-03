@@ -29,36 +29,31 @@
             <div class="bg-[#f9fafb] py-[50px] sm:pr-2 sm:pl-2 md:pr-20 md:pl-20 lg:pr-8 lg:pl-20">
                 <h1 class="text-[18px] font-[500] mb-[26px]">Order Summary</h1>
                 
-                <div class="w-full h-fit flex justify-between pb-6 mb-6 border-b">
+                <div v-for="product in orderStore.checkoutProducts" :key="product.id" 
+                     class="w-full h-fit flex justify-between pb-6 mb-6 border-b">
                     <div class="flex">
-                        <img class="block object-cover object-center w-[80px] h-[80px] rounded-[6px]" src="https://img.ltwebstatic.com/v4/j/spmp/2025/04/18/27/1744963956924bb9ff5b93504adcf7941e8349e38a.webp" alt="Product">
+                        <img class="block object-cover object-center w-[80px] h-[80px] rounded-[6px]" 
+                             :src="imagesurl+product.image" 
+                             :alt="product.name">
                         <div class="ml-3">
-                            <p class="sm:text-[12px] md:text-[14px] text-black font-[500]">Product Name</p>
-                            <p class="sm:text-[12px] md:text-[14px] text-[#6b7280] font-[500]">Jeans</p>
-                            <p class="sm:text-[12px] md:text-[14px] text-[#6b7280] font-[500]">x1</p>
+                            <p class="sm:text-[12px] md:text-[14px] text-black font-[500]">{{ product.name }}</p>
+                            <p class="sm:text-[12px] md:text-[14px] text-[#6b7280] font-[500]">{{ product.category }}</p>
+                            <p class="sm:text-[12px] md:text-[14px] text-[#6b7280] font-[500]">x{{ product.quantity }}</p>
                         </div>
                     </div>
-                    <p class="sm:text-[14px] md:text-[16px] text-black font-[500]">$19.99</p>
-                </div>
-                
-                <div class="w-full h-fit flex justify-between pb-6 mb-6 border-b">
-                    <div class="flex">
-                        <img class="block object-cover object-center w-[80px] h-[80px] rounded-[6px]" src="https://img.ltwebstatic.com/v4/j/spmp/2025/04/18/27/1744963956924bb9ff5b93504adcf7941e8349e38a.webp" alt="Product">
-                        <div class="ml-3">
-                            <p class="sm:text-[12px] md:text-[14px] text-black font-[500]">Another Product</p>
-                            <p class="sm:text-[12px] md:text-[14px] text-[#6b7280] font-[500]">Jeans</p>
-                            <p class="sm:text-[12px] md:text-[14px] text-[#6b7280] font-[500]">x2</p>
-                        </div>
-                    </div>
-                    <p class="sm:text-[14px] md:text-[16px] text-black font-[500]">$49.98</p>
+                    <p class="sm:text-[14px] md:text-[16px] text-black font-[500]">
+                        ${{ (product.price * product.quantity).toFixed(2) }}
+                    </p>
                 </div>
                 
                 <div class="w-full h-fit flex justify-between mt-6">
                     <p class="sm:text-[14px] md:text-[16px] text-[black] font-[500]">Total</p>
-                    <p class="sm:text-[14px] md:text-[16px] text-[black] font-[500]">$69.97</p>
+                    <p class="sm:text-[14px] md:text-[16px] text-[black] font-[500]">${{ orderTotal }}</p>
                 </div>
 
-                <button class="w-full mt-10 px-6 py-2 bg-[black] hover:bg-[#1d242d90] transition-all font-[300] font-poppins text-[white]">Place your order</button>
+                <button class="w-full mt-10 px-6 py-2 bg-[black] hover:bg-[#1d242d90] transition-all font-[300] font-poppins text-[white]">
+                    Place your order
+                </button>
             </div>
         </div>
     </div>
@@ -66,7 +61,24 @@
 
 <script setup>
 import HeaderSection from '@/components/store/header/HeaderSection.vue'
+import { useOrderStore } from '@/stores/order'
+import { computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
+const imagesurl = import.meta.env.VITE_IMAGES_URL
+const router = useRouter()
+const orderStore = useOrderStore()
+
+const orderTotal = computed(() => {
+    return orderStore.checkoutProducts.reduce((total, product) => {
+        return total + (product.price * product.quantity)
+    }, 0).toFixed(2)
+})
+
+onMounted(() => {
+    if (orderStore.checkoutProducts.length === 0) 
+        router.go(-1)
+})
 </script>
 
 <style scoped>
