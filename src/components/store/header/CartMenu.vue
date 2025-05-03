@@ -16,12 +16,12 @@
                 <div class="flex items-center mr-3 mt-8">
                     <input 
                         type="checkbox" 
-                        :id="'item-' + item.id" 
+                        :id="'item-' + item.productvariant_id" 
                         v-model="item.selected" 
                         class="hidden"
                     />
                     <label 
-                        :for="'item-' + item.id" 
+                        :for="'item-' + item.productvariant_id" 
                         class="w-5 h-5 border border-[#d5d5d5] flex items-center justify-center cursor-pointer"
                         :class="{'bg-black': item.selected}"
                     >
@@ -65,15 +65,14 @@
                 <p class="text-[16px] text-[black] font-ibm font-[700]">${{ selectedSubtotal.toFixed(2) }}</p>
             </div>
             
-            <router-link :to="'/checkout'">
-                <button 
-                    class="uppercase mt-[12px] outline-none text-white bg-[#333f48] hover:bg-black px-[20px] py-[14px] w-full text-[12px] tracking-[2px] font-karla font-bold block"
-                    :disabled="selectedCount === 0"
-                    :class="{'opacity-50 cursor-not-allowed': selectedCount === 0}"
-                >
-                    check out ({{ selectedCount }})
-                </button>
-            </router-link>
+            <button 
+                @click="handleCheckout"
+                class="uppercase mt-[12px] outline-none text-white bg-[#333f48] hover:bg-black px-[20px] py-[14px] w-full text-[12px] tracking-[2px] font-karla font-bold block"
+                :disabled="selectedCount === 0"
+                :class="{'opacity-50 cursor-not-allowed': selectedCount === 0}"
+            >
+                check out ({{ selectedCount }})
+            </button>
             
             <p class="text-center font-ibm text-[13px] mt-6">Fashion for Every Occasion</p>
             <p class="text-center font-ibm text-[11px] mt-2">Style That Speaks</p>
@@ -86,73 +85,85 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
-import { useWishlistStore } from '@/stores/wishlist';
-import { useAuthStore } from '@/stores/auth/storeowner/auth';
+import { computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useWishlistStore } from '@/stores/wishlist'
+import { useAuthStore } from '@/stores/auth/storeowner/auth'
+import { useOrderStore } from '@/stores/order'
 
 const imagesurl = import.meta.env.VITE_IMAGES_URL
-
-const wishlistStore = useWishlistStore();
-const authStore = useAuthStore();
+const router = useRouter()
+const wishlistStore = useWishlistStore()
+const authStore = useAuthStore()
+const orderStore = useOrderStore()
 
 onMounted(async () => {
-    await wishlistStore.loadWishlist(authStore.user);
-});
+    await wishlistStore.loadWishlist(authStore.user)
+})
 
 const selectedSubtotal = computed(() => {
     return wishlistStore.wishlistItems.reduce((total, item) => {
-        return item.selected ? total + ((item.price || 0) * (item.quantity || 1)) : total;
-    }, 0);
-});
+        return item.selected ? total + ((item.price || 0) * (item.quantity || 1)) : total
+    }, 0)
+})
 
 const selectedCount = computed(() => {
-    return wishlistStore.wishlistItems.filter(item => item.selected).length;
-});
+    return wishlistStore.wishlistItems.filter(item => item.selected).length
+})
+
+const selectedItems = computed(() => {
+    return wishlistStore.wishlistItems.filter(item => item.selected)
+})
 
 const increaseQuantity = (item) => {
-    item.quantity = (item.quantity || 1) + 1;
-};
+    item.quantity = (item.quantity || 1) + 1
+}
 
 const decreaseQuantity = (item) => {
     if ((item.quantity || 1) > 1) {
-        item.quantity = (item.quantity || 1) - 1;
+        item.quantity = (item.quantity || 1) - 1
     }
-};
+}
 
 const removeFromWishlist = async (itemId) => {
-    await wishlistStore.removeItem(authStore.user, itemId);
-};
+    await wishlistStore.removeItem(authStore.user, itemId)
+}
+
+const handleCheckout = () => {
+    orderStore.checkoutProducts = selectedItems.value
+    router.push('/checkout')
+}
 
 const closeMenu = () => {
-    const cart = document.getElementById('cart');
-    cart.classList.remove('cartopen');
-    cart.classList.add('cartclose');
-};
+    const cart = document.getElementById('cart')
+    cart.classList.remove('cartopen')
+    cart.classList.add('cartclose')
+}
 </script>
 
 <style scoped>
 .scroll::-webkit-scrollbar{
-    width:0;
+    width:0
 }
 
 .cartclose{
-    animation: cartclose 1s ease-in-out forwards;
+    animation: cartclose 1s ease-in-out forwards
 }
 
 input[type="checkbox"] + label {
-    transition: all 0.2s ease;
+    transition: all 0.2s ease
 }
 
 input[type="checkbox"] + label:hover {
-    border-color: #333f48;
+    border-color: #333f48
 }
 
 @keyframes cartclose{
     from{
-        right: 0;
+        right: 0
     }
     to{
-        right: -100%;
+        right: -100%
     }
 }
 </style>
