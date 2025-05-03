@@ -1,5 +1,15 @@
 <template>
     <HeaderSection title="Ready to Make It Yours?"/>
+    
+    <div v-if="showAlert" 
+         :class="{
+             'bg-green-100 border-green-400 text-green-700': alertType === 'success',
+             'bg-red-100 border-red-400 text-red-700': alertType === 'error'
+         }"
+         class="fixed top-4 right-4 border px-4 py-3 rounded max-w-xs z-50 transition-all duration-300">
+        {{ alertMessage }}
+    </div>
+
     <div class="sm:px-4 md:px-8 py-6 mb-16">
         <div v-if="loading" class="text-center py-8">Loading product...</div>
 
@@ -68,7 +78,8 @@
                 
                 <button @click="handleAddToCart" 
                         :disabled="!selectedVariant || selectedVariant.stock <= 0 || wishlistStore.loading"
-                        class="mt-8 px-6 py-2 bg-[black] hover:bg-[#1d242d90] transition-all font-[300] font-poppins text-[white] disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="mt-8 px-6 py-2 bg-[black] hover:bg-[#1d242d90] transition-all font-[300] font-poppins text-[white] disabled:opacity-50 disabled:cursor-not-allowed"
+                        :class="{'animate-pulse': wishlistStore.loading}">
                     <span v-if="wishlistStore.loading">
                         <i class="fa-solid fa-spinner animate-spin mr-2"></i> Processing...
                     </span>
@@ -123,6 +134,9 @@ const activeTab = ref('description')
 const selectedColor = ref('')
 const selectedSize = ref('')
 const selectedVariant = ref(null)
+const showAlert = ref(false)
+const alertMessage = ref('')
+const alertType = ref('success')
 
 const { currentProduct, loading, error } = storeToRefs(productStore)
 
@@ -167,6 +181,15 @@ const isInCart = computed(() => {
     )
 })
 
+const showAlertMessage = (message, type = 'success') => {
+    alertMessage.value = message
+    alertType.value = type
+    showAlert.value = true
+    setTimeout(() => {
+        showAlert.value = false
+    }, 2000)
+}
+
 const setMainImage = (imagePath) => {
     const mainGallery = document.getElementById('maingallery')
     if (mainGallery) {
@@ -204,7 +227,12 @@ const handleAddToCart = async () => {
         quantity: 1
     }
     
-    await wishlistStore.addItem(authStore.user, payload)
+    try {
+        await wishlistStore.addItem(authStore.user, payload)
+        showAlertMessage('Item added to cart successfully!', 'success')
+    } catch (error) {
+        showAlertMessage('Failed to add item to cart', 'error')
+    }
 }
 
 onMounted(async () => {
@@ -230,5 +258,13 @@ onMounted(async () => {
 
 * {
     @apply break-words
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+.animate-pulse {
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 </style>
