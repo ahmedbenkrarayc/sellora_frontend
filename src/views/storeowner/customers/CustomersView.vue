@@ -30,8 +30,8 @@
             <div class="flex flex-col items-center md:flex-row md:items-center md:gap-4 gap-2">
               <img class="size-12 block" src="@/assets/images/customeravatar.svg" alt="customer avatar">
               <div>
-                <p class="font-medium text-gray-800">{{ customer.name }}</p>
-                <p class="text-sm text-gray-500">{{ customer.email }}</p>
+                <p class="font-medium text-gray-800">{{ customer.user.fname+' '+customer.user.lname }}</p>
+                <p class="text-sm text-gray-500">{{ customer.user.email }}</p>
               </div>
             </div>
         
@@ -128,7 +128,6 @@ import { useStoreStore } from '@/stores/store'
 
 const storeStore = useStoreStore()
 
-// Data
 const loading = ref(false)
 const searchQuery = ref('')
 const currentPage = ref(1)
@@ -141,8 +140,9 @@ const customers = computed(() => storeStore.storeData?.customers || [])
 const filteredCustomers = computed(() => {
   if (!searchQuery.value) return customers.value
   return customers.value.filter(customer => 
-    customer.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    customer.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+    customer.user.fname.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    customer.user.lname.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    customer.user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
   )
 })
 
