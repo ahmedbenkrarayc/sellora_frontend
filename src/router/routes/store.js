@@ -75,6 +75,10 @@ export default [
             {
                 path : 'customer/list',
                 component : () => import('@/views/storeowner/customers/CustomersView.vue'),
+            },
+            {
+                path : 'order/list',
+                component : () => import('@/views/storeowner/order/OrderListView.vue'),
             }
         ]
     },
