@@ -19,6 +19,10 @@ export default [
             {
                 path: '/checkout',
                 component : () => import('@/views/store/CheckoutView.vue'),
+            },
+            {
+                path: '/orders',
+                component : () => import('@/views/store/OrderListView.vue'),
             }
         ]
     },
