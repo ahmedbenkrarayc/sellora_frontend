@@ -6,6 +6,7 @@ export const useOrderStore = defineStore('order', () => {
   const checkoutProducts = ref([])
   const currentOrder = ref(null)
   const orders = ref([])
+  const customerOrders = ref([])
   const error = ref(null)
   const loading = ref(false)
 
@@ -103,7 +104,13 @@ export const useOrderStore = defineStore('order', () => {
     error.value = null
     
     try {
-      const order = orders.value.find(o => o.id === orderId)
+      let order = orders.value.find(o => o.id === orderId) 
+      if(!order){
+        order = customerOrders.value.find(o => o.id === orderId) 
+        if(order)
+          order.originalId = order.id
+      }
+
       if (!order) throw new Error('Order not found')
 
       const apiUrl = import.meta.env.VITE_API_URL
@@ -132,6 +139,33 @@ export const useOrderStore = defineStore('order', () => {
     }
   }
 
+  const fetchCustomerOrders = async (customerId) => {
+    loading.value = true
+    error.value = null
+    
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL
+      const response = await axios.get(`${apiUrl}/orders/customer/${customerId}`, {
+        withCredentials: true,
+        headers: { 'Content-Type': 'application/json' }
+      })
+
+      if (response.status === 200) {
+        customerOrders.value = response.data
+        return customerOrders.value
+      }
+      throw new Error('Failed to fetch orders')
+    } catch (err) {
+      error.value = err.response?.data?.message || 
+                  err.response?.data?.errors || 
+                  err.message || 
+                  'Failed to load orders. Please try again.'
+      throw error.value
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     checkoutProducts,
     currentOrder,
@@ -140,6 +174,8 @@ export const useOrderStore = defineStore('order', () => {
     loading,
     createOrder,
     fetchStoreOrders,
-    updateOrderStatus
+    updateOrderStatus,
+    customerOrders,
+    fetchCustomerOrders
   }
 })
