@@ -37,6 +37,10 @@ export default [
         component: () => import('@/layouts/StoreOwnerLayout.vue'),
         children: [
             {
+                path : '',
+                component : () => import('@/views/storeowner/DashboardView.vue'),
+            },
+            {
                 path : 'category/create',
                 component : () => import('@/views/storeowner/category/CreateCategoryView.vue'),
             },
