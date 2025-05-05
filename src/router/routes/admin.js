@@ -1,7 +1,14 @@
 export default [
-    {
-      path: '/',
-      name: 'Hello',
-      component: () => import('@/views/AdminView.vue')
-    }
+  {
+      path: '',
+      name: 'adminlayout',
+      component: () => import('@/layouts/AdminLayout.vue'),
+      children: [
+        {
+          path: 'storeowners',
+          name: 'storeowners',
+          component: () => import('@/views/admin/StoreOwnersView.vue')
+        }
+      ]
+  },
 ] 
