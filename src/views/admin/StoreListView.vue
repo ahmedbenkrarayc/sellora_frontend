@@ -132,7 +132,7 @@
   const searchQuery = ref('')
   const currentPage = ref(1)
   const itemsPerPage = 10
-  const statusLoading = ref({}) // Track loading state per store
+  const statusLoading = ref({})
   
   onMounted(async () => {
     try {

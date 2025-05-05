@@ -30,12 +30,12 @@ export const useStatisticsStore = defineStore('statistics', () => {
     }
   }
 
-  const getStoreOwnerDashboard = async () => {
+  const getStoreOwnerDashboard = async (storeId) => {
     loading.value = true
     error.value = null
     try {
       const apiUrl = import.meta.env.VITE_API_URL
-      const response = await axios.get(`${apiUrl}/storeowner/statistics`, {
+      const response = await axios.get(`${apiUrl}/storeowner/statistics/${storeId}`, {
         withCredentials: true
       })
 
