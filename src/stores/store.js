@@ -6,6 +6,7 @@ export const useStoreStore = defineStore('store', () => {
   const storeData = ref(null)
   const error = ref(null)
   const loading = ref(false)
+  const allStores = ref([])
 
   const createStore = async (storeDataPayload) => {
     loading.value = true
@@ -104,6 +105,64 @@ export const useStoreStore = defineStore('store', () => {
     }
   }
 
+  const fetchAllStores = async () => {
+    loading.value = true
+    error.value = null
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL
+      const response = await axios.get(`${apiUrl}/stores`, {
+        withCredentials: true,
+      })
+
+      if (response.status === 200) {
+        allStores.value = response.data
+      } else {
+        throw new Error('Failed to fetch stores')
+      }
+    } catch (err) {
+      error.value = err.response?.data?.message || err.message || 'Unknown error'
+      console.error('Error fetching stores:', error.value)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const updateStoreStatus = async (id, status) => {
+    loading.value = true
+    error.value = null
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL
+      const response = await axios.put(
+        `${apiUrl}/stores/status/${id}`,
+        { status },
+        { withCredentials: true }
+      )
+
+      if (response.status === 200) {
+        const index = allStores.value.findIndex(store => store.id === id)
+        if (index !== -1) {
+          allStores.value[index].status = status
+        }
+        if (storeData.value?.id === id) {
+          storeData.value.status = status
+        }
+        return response.data
+      } else {
+        throw new Error('Failed to update store status')
+      }
+    } catch (err) {
+      if (err.response?.status === 422) {
+        error.value = err.response?.data?.errors || 'Validation failed.'
+      } else {
+        error.value = err.response?.data?.message || err.message || 'Unknown error'
+      }
+      console.error('Error updating store status:', error.value)
+      throw error.value
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     storeData,
     error,
@@ -111,5 +170,8 @@ export const useStoreStore = defineStore('store', () => {
     createStore,
     getStoreBySubdomain,
     updateStore,
+    allStores,
+    fetchAllStores,
+    updateStoreStatus
   }
 })
