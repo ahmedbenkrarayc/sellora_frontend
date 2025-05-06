@@ -31,6 +31,9 @@ async function validateSubdomain() {
     if (!store.storeData) {
       window.location.href = 'http://websitedoesntexist.com'
       return false
+    }else if(!store.storeData.is_active){
+      window.location.href = 'http://websitedoesntexist.com'
+      return false
     }
   }
 
