@@ -186,7 +186,7 @@
 </template>
   
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Toast from 'primevue/toast'
 import { useAuthStore } from '@/stores/auth/storeowner/auth'
 import { useStoreStore } from '@/stores/store'
@@ -257,8 +257,15 @@ const submitForm = async () => {
     }
   }else{
     //success
+    window.location.reload()
   }
 }
+
+onMounted(() => {
+  if(authStore.user.store){
+    window.location.href = 'http://'+authStore.user.store.subdomain+'.sellora.local:5173/storeowner'
+  }
+})
 </script>
 
   
