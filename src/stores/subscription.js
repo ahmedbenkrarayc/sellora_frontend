@@ -6,6 +6,8 @@ export const useSubscriptionStore = defineStore('subscription', () => {
   const apiUrl = import.meta.env.VITE_API_URL 
   const isSubscribed = ref(false)
   const loading = ref(false)
+  const error = ref(null)
+  const history = ref([])
 
   const fetchStatus = async () => {
     try {
@@ -39,11 +41,35 @@ export const useSubscriptionStore = defineStore('subscription', () => {
     }
   }
 
+  const fetchSubscriptionHistory = async () => {
+    loading.value = true
+    error.value = null
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL
+      const response = await axios.get(`${apiUrl}/subscription/history`, {
+        withCredentials: true
+      })
+
+      if (response.status === 200) {
+        history.value = response.data
+      } else {
+        throw new Error('Failed to fetch subscription history')
+      }
+    } catch (err) {
+      error.value = err.response?.data?.message || err.message || 'Unknown error'
+      console.error('Error fetching subscription history:', error.value)
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     isSubscribed,
     loading,
     fetchStatus,
     subscribe,
     cancel,
+    history,
+    fetchSubscriptionHistory
   }
 })
