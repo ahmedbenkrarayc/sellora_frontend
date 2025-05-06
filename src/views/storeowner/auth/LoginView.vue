@@ -100,7 +100,17 @@ async function submit() {
   try {
     await authStore.login({ ...form })
     showToast('success', 'Login Successful', 'Welcome back!')
-    router.push('/')
+    if(authStore.user.role == 'storeowner'){
+      if(authStore.user?.store){
+        window.location.href = 'http://'+authStore.user.store.subdomain+'.sellora.local:5173/storeowner'
+      }else{
+        window.location.href = 'http://sellora.local:5173/store/create'
+      }
+    }else if(authStore.user.role == 'superadmin'){
+      window.location.href = 'http://admin.sellora.local:5173'
+    }else{
+      window.location.href = 'http://'+authStore.user.customer.store.subdomain+'.sellora.local:5173'
+    }
   } catch (error) {
     const msg = error.response?.data?.message || 'Invalid login credentials.'
     showToast('error', 'Login Failed', msg)

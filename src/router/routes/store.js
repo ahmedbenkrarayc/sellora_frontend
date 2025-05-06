@@ -1,5 +1,10 @@
 export default [
     {
+        path: '/register',
+        component : () => import('@/views/store/RegisterView.vue'),
+        meta: { requiresGuest: true },
+    },
+    {
         path : '/',
         name: 'storelayout',
         component : () => import('@/layouts/StoreLayout.vue'),
@@ -19,22 +24,25 @@ export default [
             {
                 path: '/checkout',
                 component : () => import('@/views/store/CheckoutView.vue'),
+                meta: { requiresAuth: true, requiresRole: 'customer' },
             },
             {
                 path: '/orders',
                 component : () => import('@/views/store/OrderListView.vue'),
+                meta: { requiresAuth: true, requiresRole: 'customer' },
             }
         ]
     },
-    {
-        path : '/search',
-        name: 'catalogview',
-        component : () => import('@/views/store/CatalogView.vue'),
-    },
+    // {
+    //     path : '/search',
+    //     name: 'catalogview',
+    //     component : () => import('@/views/store/CatalogView.vue'),
+    // },
     {
         path: '/storeowner',
         name: 'storeownerlayout',
         component: () => import('@/layouts/StoreOwnerLayout.vue'),
+        meta: { requiresAuth: true, requiresRole: 'storeowner' },
         children: [
             {
                 path : '',
