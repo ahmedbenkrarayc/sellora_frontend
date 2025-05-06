@@ -87,6 +87,10 @@ export default [
             {
                 path : 'order/list',
                 component : () => import('@/views/storeowner/order/OrderListView.vue'),
+            },
+            {
+                path : 'subscription',
+                component : () => import('@/views/storeowner/SubscriptionView.vue'),
             }
         ]
     },
