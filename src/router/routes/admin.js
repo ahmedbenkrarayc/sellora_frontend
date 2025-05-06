@@ -19,6 +19,11 @@ export default [
           path: 'stores',
           name: 'stores',
           component: () => import('@/views/admin/StoreListView.vue')
+        },
+        {
+          path: 'subscription/history',
+          name: 'subscriptionHistory',
+          component: () => import('@/views/admin/SubscriptionHistoryView.vue')
         }
       ]
   },
